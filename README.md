@@ -1,9 +1,9 @@
 irccloud.BufSwitch.user.js
 ==========================
 
-Switch buffers quickly without a mouse.
+Switch channels/conversations quickly without a mouse.
 
-1. Type any part of a buffer name in the message input box
+1. Type any part of a buffer name where you normally type messages.
 2. Hit `Ctrl+G`
 
 The activation key can be changed by editing the source.
