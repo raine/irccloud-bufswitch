@@ -39,15 +39,39 @@ inject(function() {
 		};
 
 		// Sort by the index of first two characters of `str`
-		var sortByName = function(buf) {
-			var name  = buf.attributes.name.replace(/^[^\w]*/, '');
-			var index = name.indexOf(str.substr(0, 2));
-			return (index >= 0 ? index : 999);
+		var sortByName = function(a, b) {
+			var subStr = str.substr(0, 2);
+			var args = _.map(_.toArray(arguments), function(buf) {
+				return buf.attributes.name.replace(/^[^\w]*/, '');
+			});
+
+			a = args[0]; b = args[1];
+			ai = a.indexOf(subStr);
+			bi = b.indexOf(subStr);
+
+			if (ai === bi) {
+				// Prefer shorter if first two are equal
+				if (a.length < b.length) return 1;
+				else if (a.length > b.length) return -1;
+				else return 0;
+			}
+
+			if (ai === -1) {
+				return -1;
+			} else if (bi === -1) {
+				return 1;
+			}
+
+			if (ai < bi) {
+				return 1;
+			} else {
+				return -1;
+			}
 		};
 
 		return _.chain(getBuffers())
 			.filter(hasPattern)
-			.sortBy(sortByName)
+			.sort(sortByName)
 			.value();
 	};
 
@@ -57,7 +81,7 @@ inject(function() {
 				var $ta = $(this);
 				var str = $ta.val();
 				if (str.length > 0) {
-					_.head(findBuffersByPattern(str)).select();
+					_.last(findBuffersByPattern(str)).select();
 					$ta.val('');
 				}
 			}
