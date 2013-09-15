@@ -96,8 +96,8 @@ inject(function() {
 	var bindHotkey = function() {
 		var shortcut = parseShortcut();
 
-		$(document).on('keypress', '[id^=bufferInputView]', function(ev) {
-			// HACK: In Chrome, keypress with modifier (ctrl) on returns keycode for
+		$(document).on('keydown', '[id^=bufferInputView]', function(ev) {
+			// HACK: In Chrome, keydown with modifier (ctrl) on returns keycode for
 			//       the upper case variant
 			var code = String.fromCharCode(ev.which).toLowerCase().charCodeAt(0);
 
