@@ -97,7 +97,11 @@ inject(function() {
 		var shortcut = parseShortcut();
 
 		$(document).on('keypress', '[id^=bufferInputView]', function(ev) {
-			if (ev[shortcut.modif + 'Key'] && ev.which === shortcut.key) {
+			// HACK: In Chrome, keypress with modifier (ctrl) on returns keycode for
+			//       the upper case variant
+			var code = String.fromCharCode(ev.which).toLowerCase().charCodeAt(0);
+
+			if (ev[shortcut.modif + 'Key'] && code === shortcut.key) {
 				var $ta = $(this);
 				var str = $ta.val();
 				if (str.length > 0) {
