@@ -8,6 +8,7 @@ Switch buffers quickly without a mouse.
 
 The activation key can be changed by editing the source.
 
+See also: [irccloud.AlwaysMarkRead](https://github.com/raneksi/irccloud-alwaysmarkread).
 
 # Installation
 
