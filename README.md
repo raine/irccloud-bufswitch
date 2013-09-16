@@ -10,6 +10,10 @@ The activation key can be changed by editing the source.
 
 See also: [irccloud.AlwaysMarkRead](https://github.com/raneksi/irccloud-alwaysmarkread).
 
+## Try Without Installing
+
+GitHub doesn't allow bookmarklets in READMEs, [follow this link](http://raneksi.github.io/irccloud-bufswitch/bookmarklet.html).
+
 ## Installation
 
 I have tested the userscript on Chrome and Firefox using Greasemonkey.
