@@ -10,18 +10,18 @@ The activation key can be changed by editing the source.
 
 See also: [irccloud.AlwaysMarkRead](https://github.com/raneksi/irccloud-alwaysmarkread).
 
-# Installation
+## Installation
 
 I have tested the userscript on Chrome and Firefox using Greasemonkey.
 
-## Firefox
+### Firefox
 
 1. Install [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/).
 2. Go to http://userscripts.org/scripts/source/177846.user.js and click **Install**.
 
-## Chrome
+### Chrome
 
-### Method 1 (Recommended)
+#### Method 1 (Recommended)
 
 This method provides automatic updates for the script.
 
@@ -29,7 +29,7 @@ This method provides automatic updates for the script.
 2. Go to http://userscripts.org/scripts/source/177846.user.js and click
    **OK** to confirm installation.
 
-### Method 2
+#### Method 2
 
 1. Download [irccloud.BufSwitch.user.js](https://github.com/raneksi/irccloud-bufswitch/raw/master/irccloud.BufSwitch.user.js) to your computer.
 2. Go to the extension view in Chrome ([chrome://extensions](chrome://extensions)).
