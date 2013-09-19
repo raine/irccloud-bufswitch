@@ -12,7 +12,7 @@ The activation key can be changed by editing the source.
 
 See also: [irccloud.AlwaysMarkRead](https://github.com/raneksi/irccloud-alwaysmarkread).
 
-## Try Without Installing
+## Try Without Installing (Bookmarklet)
 
 GitHub doesn't allow bookmarklets in READMEs, [follow this link](http://raneksi.github.io/irccloud-bufswitch/bookmarklet.html).
 
