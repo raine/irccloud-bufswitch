@@ -105,8 +105,11 @@ inject(function() {
 				var $ta = $(this);
 				var str = $ta.val();
 				if (str.length > 0) {
-					_.last(findBuffersByPattern(str)).select();
-					$ta.val('');
+					var buf = _.last(findBuffersByPattern(str));
+					if (buf) {
+						buf.select();
+						$ta.val('');
+					}
 				}
 
 				ev.preventDefault();
