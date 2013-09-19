@@ -93,28 +93,30 @@ inject(function() {
 		};
 	};
 
-	var bindHotkey = function() {
-		var shortcut = parseShortcut();
-
-		$(document).on('keydown', '[id^=bufferInputView]', function(ev) {
-			// HACK: In Chrome, keydown with modifier (ctrl) on returns keycode for
-			//       the upper case variant
-			var code = String.fromCharCode(ev.which).toLowerCase().charCodeAt(0);
-
-			if (ev[shortcut.modif + 'Key'] && code === shortcut.key) {
-				var $ta = $(this);
-				var str = $ta.val();
-				if (str.length > 0) {
-					var buf = _.last(findBuffersByPattern(str));
-					if (buf) {
-						buf.select();
-						$ta.val('');
-					}
-				}
-
-				ev.preventDefault();
+	var activate = function($textarea) {
+		var str = $textarea.val();
+		if (str.length > 0) {
+			var buf = _.last(findBuffersByPattern(str));
+			if (buf) {
+				buf.select();
+				$textarea.val('');
 			}
-		});
+		}
+	};
+
+	var onKeydown = function(shortcut, ev) {
+		// HACK: In Chrome, keydown with modifier (ctrl) on returns keycode for
+		//       the upper case variant
+		var charCode = String.fromCharCode(ev.which).toLowerCase().charCodeAt(0);
+
+		if (ev[shortcut.modif + 'Key'] && charCode === shortcut.key) {
+			activate($(this));
+			ev.preventDefault();
+		}
+	};
+
+	var bindHotkey = function() {
+		$(document).on('keydown', '[id^=bufferInputView]', _.partial(onKeydown, parseShortcut()));
 	};
 
 	var readyCheck = function(done) {
