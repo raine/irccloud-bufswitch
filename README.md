@@ -1,6 +1,8 @@
 irccloud.BufSwitch.user.js
 ==========================
 
+![](https://raw.github.com/raneksi/irccloud-bufswitch/gh-pages/pic.png)
+
 Switch channels/conversations quickly without a mouse.
 
 1. Type any part of a buffer name where you normally type messages.
