@@ -21,12 +21,23 @@ inject(function() {
 		console.log(JSON.stringify(obj));
 	};
 
-	var getBuffers = function() {
-		return _.filter(SESSION.buffers.models,	function(buf) {
-			var notConsole  = buf.attributes.buffer_type !== 'console';
-			var notArchived = buf.attributes.archived != true; // undefined or false
-			return notConsole && notArchived;
+	var filterWith = function(list) {
+		var preds = _.toArray(arguments).slice(1);
+
+		return _.filter(list, function(obj) {
+			var call = function(a, b) { return b(a); };
+			return _.every(preds, _.partial(call, obj));
 		});
+	};
+
+	var b = {
+		isNotConsole  : function(buf) { return buf.attributes.buffer_type !== 'console'; },
+		isNotArchived : function(buf) { return buf.attributes.archived != true; },
+		isUnseen      : function(buf) { return buf.unseen; }
+	};
+
+	var getBuffers = function() {
+		return filterWith(SESSION.buffers.models, _.toArray(arguments));
 	};
 
 	var createPattern = function(str) {
@@ -73,7 +84,8 @@ inject(function() {
 			}
 		};
 
-		return _.chain(getBuffers())
+		return _.chain(SESSION.buffers.models)
+			.filterWith(b.isNotConsole, b.isNotArchived)
 			.filter(hasPattern)
 			.sort(sortByName)
 			.value();
@@ -116,6 +128,7 @@ inject(function() {
 	};
 
 	var bindHotkey = function() {
+		if (!_.has(_, 'filterWith')) _.mixin({ filterWith: filterWith });
 		$(document).on('keydown', '[id^=bufferInputView]', _.partial(onKeydown, parseShortcut()));
 	};
 
