@@ -169,7 +169,7 @@ inject(function() {
 		}
 	};
 
-	var bindHotkey = function() {
+	var bindHotkeys = function() {
 		if (!_.has(_, 'filterWith')) _.mixin({ filterWith: filterWith });
 		$(document).on('keydown', _.partial(handleKeydown, parseShortcuts(), handlers));
 	};
