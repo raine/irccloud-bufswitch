@@ -15,7 +15,10 @@ var inject = function(fn) {
 };
 
 inject(function() {
-	var BUF_SWITCH_KEY = 'ctrl+g';
+	var SHORTCUTS = {
+		bufSwitch  : 'ctrl+g',
+		nextActive : 'ctrl+n'
+	};
 
 	var log = function(obj) {
 		console.log(JSON.stringify(obj));
@@ -91,45 +94,84 @@ inject(function() {
 			.value();
 	};
 
-	var parseShortcut = function() {
-		var map = BUF_SWITCH_KEY.split('+');
-		var modif = map[0];
-		var key   = map[1];
-
-		if (modif === 'cmd')
-			modif = 'meta';
-
-		return {
-			modif : modif,
-			key   : key.charCodeAt(0)
-		};
+	var getActiveBuffers = function() {
+		return _.chain(SESSION.buffers.models)
+			.filterWith(b.isUnseen, b.isNotConsole, b.isNotArchived)
+			.sortBy(function(buf) { return buf.unseenHighlights.length > 0; })
+			.value();
 	};
 
-	var activate = function($textarea) {
-		var str = $textarea.val();
-		if (str.length > 0) {
-			var buf = _.last(findBuffersByPattern(str));
-			if (buf) {
-				buf.select();
-				$textarea.val('');
+	var parseShortcuts = function() {
+		var parseShortcut = function(str) {
+			var map = str.split('+');
+			var modif = map[0];
+			var key   = map[1];
+
+			if (modif === 'cmd')
+				modif = 'meta';
+
+			return {
+				modif : modif,
+				key   : key.charCodeAt(0)
+			};
+		};
+
+		return _.object(_.map(SHORTCUTS, function(key, cmd) {
+			return [ cmd, parseShortcut(key) ];
+		}));
+	};
+
+	var handlers = {
+		bufSwitch: {
+			target: '[id^=bufferInputView]',
+			fn: function($textarea) {
+				var str = $textarea.val();
+				if (str.length > 0) {
+					var buf = _.last(findBuffersByPattern(str));
+					if (buf) {
+						buf.select();
+						$textarea.val('');
+					}
+				}
+			}
+		},
+		nextActive: {
+			fn: function() {
+				var buf = _.last(getActiveBuffers());
+				buf && buf.select();
 			}
 		}
 	};
 
-	var onKeydown = function(shortcut, ev) {
-		// HACK: In Chrome, keydown with modifier (ctrl) on returns keycode for
-		//       the upper case variant
-		var charCode = String.fromCharCode(ev.which).toLowerCase().charCodeAt(0);
+	var handleKeydown = function(shortcuts, handlers, ev) {
+		matchShortcut = function(arr) {
+			var shortcut = arr[1];
 
-		if (ev[shortcut.modif + 'Key'] && charCode === shortcut.key) {
-			activate($(this));
-			ev.preventDefault();
+			// HACK: In Chrome, keydown with modifier (ctrl) on returns the
+			// keycode for the upper case variant
+			var charCode = String.fromCharCode(ev.which).toLowerCase().charCodeAt(0);
+
+			if (ev[shortcut.modif + 'Key'] && charCode === shortcut.key) {
+				ev.preventDefault();
+				return true;
+			}
+		};
+
+		// Find the first shortcut that matches the `ev` and run the handler
+		// if its target element matches
+		var action;
+		if (action = _.find(_.pairs(shortcuts), matchShortcut)) {
+			var cmd = action[0], handler;
+			if (handler = handlers[cmd]) {
+				if (handler.target && !$(ev.target).is(handler.target)) return;
+				handler.fn($(ev.target));
+			}
 		}
 	};
 
 	var bindHotkey = function() {
 		if (!_.has(_, 'filterWith')) _.mixin({ filterWith: filterWith });
-		$(document).on('keydown', '[id^=bufferInputView]', _.partial(onKeydown, parseShortcut()));
+		$(document).on('keydown', _.partial(handleKeydown, parseShortcuts(), handlers));
 	};
 
 	var readyCheck = function(done) {
@@ -142,5 +184,5 @@ inject(function() {
 		})();
 	};
 
-	readyCheck(bindHotkey);
+	readyCheck(bindHotkeys);
 });
