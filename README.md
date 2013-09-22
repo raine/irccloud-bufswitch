@@ -5,10 +5,15 @@ irccloud.BufSwitch.user.js
 
 Switch channels/conversations quickly without a mouse.
 
-1. Type any part of a buffer name where you normally type messages.
-2. Hit `Ctrl+G`
+## Features
 
-The activation key can be changed by editing the source.
+* **Find a buffer by name**
+  1. Type any part of a buffer name where you normally type messages.
+  2. Hit `Ctrl+G`
+* **Go to the next buffer with unseen messages**
+  * Shortcut `Ctrl+N`
+
+The shortcuts can be changed by editing the source.
 
 See also: [irccloud.AlwaysMarkRead](https://github.com/raneksi/irccloud-alwaysmarkread).
 
