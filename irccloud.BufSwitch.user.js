@@ -3,7 +3,7 @@
 // @namespace      http://github.com/raneksi
 // @description    Switch buffers quickly without a mouse
 // @match          https://www.irccloud.com/*
-// @version        0.0.3
+// @version        0.0.4
 // @updateURL      https://userscripts.org/scripts/source/177846.meta.js
 // @downloadURL    https://userscripts.org/scripts/source/177846.user.js
 // ==/UserScript==
