@@ -7,7 +7,7 @@ Switch channels/conversations quickly without a mouse.
 
 ## Features
 
-* **Find a buffer by name**
+* **Go to a buffer by name**
   1. Type any part of a buffer name where you normally type messages.
   2. Hit `Ctrl+G`
 * **Go to the next buffer with unseen messages**
