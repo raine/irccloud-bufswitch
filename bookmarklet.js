@@ -15,4 +15,5 @@ var getHTML = function() {
 	return html;
 };
 
-fs.writeFileSync('bookmarklet.html', getHTML());
+// fs.writeFileSync('bookmarklet.html', getHTML());
+process.stdout.write(getHTML());
