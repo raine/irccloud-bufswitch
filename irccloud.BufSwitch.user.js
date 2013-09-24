@@ -139,13 +139,13 @@ inject(function() {
 		nextActive: {
 			fn: function() {
 				var buf = _.last(getActiveBuffers());
-				buf && buf.select();
+				if (buf) buf.select();
 			}
 		},
 		back: {
 			fn: function() {
 				var prev = SESSIONVIEW.model.previousBuffer;
-				prev && prev.select();
+				if (prev) prev.select();
 			}
 		}
 	};
