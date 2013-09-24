@@ -17,7 +17,8 @@ var inject = function(fn) {
 inject(function() {
 	var SHORTCUTS = {
 		bufSwitch  : 'ctrl+g',
-		nextActive : 'ctrl+n'
+		nextActive : 'ctrl+n',
+		back       : 'ctrl+b'
 	};
 
 	var log = function(obj) {
@@ -140,6 +141,12 @@ inject(function() {
 				var buf = _.last(getActiveBuffers());
 				buf && buf.select();
 			}
+		},
+		back: {
+			fn: function() {
+				var prev = SESSIONVIEW.model.previousBuffer;
+				prev && prev.select();
+			}
 		}
 	};
 
@@ -169,7 +176,7 @@ inject(function() {
 		}
 	};
 
-	var bindHotkeys = function() {
+	var setup = function() {
 		if (!_.has(_, 'filterWith')) _.mixin({ filterWith: filterWith });
 		$(document).on('keydown', _.partial(handleKeydown, parseShortcuts(), handlers));
 	};
@@ -184,5 +191,5 @@ inject(function() {
 		})();
 	};
 
-	readyCheck(bindHotkeys);
+	readyCheck(setup);
 });
