@@ -5,7 +5,7 @@ irccloud.BufSwitch.user.js
 
 Switch channels/conversations quickly without a mouse.
 
-## Features
+## Shortcuts
 
 * **Go to a buffer by name**
   1. Type any part of a buffer name where you normally type messages.
