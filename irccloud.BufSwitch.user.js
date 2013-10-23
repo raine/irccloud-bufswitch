@@ -40,8 +40,23 @@ inject(function() {
 		isUnseen      : function(buf) { return buf.unseen; }
 	};
 
-	var getBuffers = function() {
-		return filterWith(SESSION.buffers.models, _.toArray(arguments));
+	var bufferOrdering = function() {
+		var i = 0;
+		var connPosns = _.reduce(SESSIONVIEW.model.connections.models, function(posns, conn) {
+			posns[conn.cid] = i++;
+			return posns;
+		}, {});
+
+		var sortByConnAndName = function(buf) {
+			return [connPosns[buf.connection.cid], buf.attributes.name];
+		};
+
+		i = 0;
+		return _.sortBy(SESSION.buffers.models, sortByConnAndName)
+			.reduce(function(acc, buf) {
+				acc[buf.cid] = i++;
+				return acc;
+			}, {});
 	};
 
 	var createPattern = function(str) {
@@ -96,10 +111,14 @@ inject(function() {
 	};
 
 	var getActiveBuffers = function() {
-		return _.chain(SESSION.buffers.models)
-			.filterWith(b.isUnseen, b.isNotConsole, b.isNotArchived)
-			.sortBy(function(buf) { return buf.unseenHighlights.length > 0; })
-			.value();
+		var allUnseen = _.chain(SESSION.buffers.models)
+  			         .filterWith(b.isUnseen, b.isNotConsole, b.isNotArchived);
+		var buffersWithMentions = allUnseen.filterWith(function(buf) { return buf.unseenHighlights.length > 0; });
+		if (buffersWithMentions.size() > 0) {
+			return buffersWithMentions.value();
+		} else {
+			return allUnseen.value();
+		}
 	};
 
 	var parseShortcuts = function() {
@@ -138,8 +157,14 @@ inject(function() {
 		},
 		nextActive: {
 			fn: function() {
-				var buf = _.last(getActiveBuffers());
-				if (buf) buf.select();
+				var ordering = bufferOrdering();
+				var current = ordering[SESSION.currentBuffer.cid];
+				var active = _.sortBy(getActiveBuffers(), function(buf) {
+					var posn = ordering[buf.cid]
+					return [current > posn, posn];
+				});
+
+				if (active.length > 0) active[0].select();
 			}
 		},
 		back: {
