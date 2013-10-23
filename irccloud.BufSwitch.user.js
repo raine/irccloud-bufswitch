@@ -18,7 +18,8 @@ inject(function() {
 	var SHORTCUTS = {
 		bufSwitch  : 'ctrl+g',
 		nextActive : 'ctrl+n',
-		back       : 'ctrl+b'
+		prevActive : 'ctrl+p',
+		back	   : 'ctrl+b'
 	};
 
 	var log = function(obj) {
@@ -112,7 +113,7 @@ inject(function() {
 
 	var getActiveBuffers = function() {
 		var allUnseen = _.chain(SESSION.buffers.models)
-  			         .filterWith(b.isUnseen, b.isNotConsole, b.isNotArchived);
+				 .filterWith(b.isUnseen, b.isNotConsole, b.isNotArchived);
 		var buffersWithMentions = allUnseen.filterWith(function(buf) { return buf.unseenHighlights.length > 0; });
 		if (buffersWithMentions.size() > 0) {
 			return buffersWithMentions.value();
@@ -141,6 +142,17 @@ inject(function() {
 		}));
 	};
 
+	var selectAdjacentUnreadChannel = function(picker) {
+		var ordering = bufferOrdering();
+		var current = ordering[SESSION.currentBuffer.cid];
+		var active = _.sortBy(getActiveBuffers(), function(buf) {
+			var posn = ordering[buf.cid]
+			return [current > posn, posn];
+		});
+
+		if (active.length > 0) picker(active).select();
+	}
+
 	var handlers = {
 		bufSwitch: {
 			target: '[id^=bufferInputView]',
@@ -157,14 +169,12 @@ inject(function() {
 		},
 		nextActive: {
 			fn: function() {
-				var ordering = bufferOrdering();
-				var current = ordering[SESSION.currentBuffer.cid];
-				var active = _.sortBy(getActiveBuffers(), function(buf) {
-					var posn = ordering[buf.cid]
-					return [current > posn, posn];
-				});
-
-				if (active.length > 0) active[0].select();
+				selectAdjacentUnreadChannel(_.first);
+			}
+		},
+		prevActive: {
+			fn: function() {
+				selectAdjacentUnreadChannel(_.last);
 			}
 		},
 		back: {

@@ -12,6 +12,8 @@ Switch channels/conversations quickly without a mouse.
   2. Hit `Ctrl+G`
 * **Go to the next buffer with unseen messages**
   * Shortcut `Ctrl+N`
+* **Go to the previous buffer with unseen messages**
+  * Shortcut `Ctrl+P`
 * **Go to the previous buffer**
   * Shortcut `Ctrl+B`
 
