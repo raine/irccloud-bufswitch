@@ -142,12 +142,22 @@ inject(function() {
 		}));
 	};
 
+
+	var padWithZeros = function(number, max, radix) {
+		radix = radix || 10;
+		var maxLength = max.toString(radix).length;
+		var str = number.toString(radix);
+		_.times(maxLength - str.length, function() {str = '0' + str} );
+		return str;
+	};
+
 	var selectAdjacentUnreadChannel = function(picker) {
 		var ordering = bufferOrdering();
+		var totalBuffers = _.keys(ordering).length;
 		var current = ordering[SESSION.currentBuffer.cid];
 		var active = _.sortBy(getActiveBuffers(), function(buf) {
-			var posn = ordering[buf.cid]
-			return [current > posn, posn];
+			var posn = ordering[buf.cid];
+			return [current >= posn, padWithZeros(posn, totalBuffers)];
 		});
 
 		if (active.length > 0) picker(active).select();
