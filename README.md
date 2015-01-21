@@ -1,7 +1,7 @@
 irccloud.BufSwitch.user.js
 ==========================
 
-![](https://raw.github.com/raneksi/irccloud-bufswitch/gh-pages/pic.png)
+![](https://raw.github.com/raine/irccloud-bufswitch/gh-pages/pic.png)
 
 Switch channels/conversations quickly without a mouse.
 
@@ -17,11 +17,11 @@ Switch channels/conversations quickly without a mouse.
 
 The shortcuts can be changed by editing the source.
 
-See also: [irccloud.AlwaysMarkRead](https://github.com/raneksi/irccloud-alwaysmarkread).
+See also: [irccloud.AlwaysMarkRead](https://github.com/raine/irccloud-alwaysmarkread).
 
 ## Try Without Installing (Bookmarklet)
 
-GitHub doesn't allow bookmarklets in READMEs, [follow this link](http://raneksi.github.io/irccloud-bufswitch/bookmarklet.html).
+GitHub doesn't allow bookmarklets in READMEs, [follow this link](http://raine.github.io/irccloud-bufswitch/bookmarklet.html).
 
 ## Installation
 
@@ -44,7 +44,7 @@ This method provides automatic updates for the script.
 
 #### Method 2
 
-1. Download [irccloud.BufSwitch.user.js](https://github.com/raneksi/irccloud-bufswitch/raw/master/irccloud.BufSwitch.user.js) to your computer.
+1. Download [irccloud.BufSwitch.user.js](https://github.com/raine/irccloud-bufswitch/raw/master/irccloud.BufSwitch.user.js) to your computer.
 2. Go to the extension view in Chrome ([chrome://extensions](chrome://extensions)).
 3. Drag the `irccloud.BufSwitch.user.js` file on the extension page. It
    should say "Drop to install" as you do so.
