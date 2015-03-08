@@ -18,7 +18,8 @@ inject(function() {
 	var SHORTCUTS = {
 		bufSwitch  : 'ctrl+g',
 		nextActive : 'ctrl+n',
-		back       : 'ctrl+b'
+		prevActive : 'ctrl+p',
+		back	   : 'ctrl+b'
 	};
 
 	var log = function(obj) {
@@ -40,8 +41,23 @@ inject(function() {
 		isUnseen      : function(buf) { return buf.unseen; }
 	};
 
-	var getBuffers = function() {
-		return filterWith(SESSION.buffers.models, _.toArray(arguments));
+	var bufferOrdering = function() {
+		var i = 0;
+		var connPosns = _.reduce(SESSIONVIEW.model.connections.models, function(posns, conn) {
+			posns[conn.cid] = i++;
+			return posns;
+		}, {});
+
+		var sortByConnAndName = function(buf) {
+			return [connPosns[buf.connection.cid], buf.attributes.name];
+		};
+
+		i = 0;
+		return _.sortBy(SESSION.buffers.models, sortByConnAndName)
+			.reduce(function(acc, buf) {
+				acc[buf.cid] = i++;
+				return acc;
+			}, {});
 	};
 
 	var createPattern = function(str) {
@@ -96,10 +112,14 @@ inject(function() {
 	};
 
 	var getActiveBuffers = function() {
-		return _.chain(SESSION.buffers.models)
-			.filterWith(b.isUnseen, b.isNotConsole, b.isNotArchived)
-			.sortBy(function(buf) { return buf.unseenHighlights.length > 0; })
-			.value();
+		var allUnseen = _.chain(SESSION.buffers.models)
+				 .filterWith(b.isUnseen, b.isNotConsole, b.isNotArchived);
+		var buffersWithMentions = allUnseen.filterWith(function(buf) { return buf.unseenHighlights.length > 0; });
+		if (buffersWithMentions.size() > 0) {
+			return buffersWithMentions.value();
+		} else {
+			return allUnseen.value();
+		}
 	};
 
 	var parseShortcuts = function() {
@@ -122,6 +142,27 @@ inject(function() {
 		}));
 	};
 
+
+	var padWithZeros = function(number, max, radix) {
+		radix = radix || 10;
+		var maxLength = max.toString(radix).length;
+		var str = number.toString(radix);
+		_.times(maxLength - str.length, function() {str = '0' + str} );
+		return str;
+	};
+
+	var selectAdjacentUnreadChannel = function(picker) {
+		var ordering = bufferOrdering();
+		var totalBuffers = _.keys(ordering).length;
+		var current = ordering[SESSION.currentBuffer.cid];
+		var active = _.sortBy(getActiveBuffers(), function(buf) {
+			var posn = ordering[buf.cid];
+			return [current >= posn, padWithZeros(posn, totalBuffers)];
+		});
+
+		if (active.length > 0) picker(active).select();
+	}
+
 	var handlers = {
 		bufSwitch: {
 			target: '[id^=bufferInputView]',
@@ -138,8 +179,12 @@ inject(function() {
 		},
 		nextActive: {
 			fn: function() {
-				var buf = _.last(getActiveBuffers());
-				if (buf) buf.select();
+				selectAdjacentUnreadChannel(_.first);
+			}
+		},
+		prevActive: {
+			fn: function() {
+				selectAdjacentUnreadChannel(_.last);
 			}
 		},
 		back: {
